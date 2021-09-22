@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System;
+using System.Diagnostics;
 
 namespace SpotifyAPI.Web.Auth
 {
@@ -7,24 +7,14 @@ namespace SpotifyAPI.Web.Auth
     {
         public static void OpenBrowser(string url)
         {
-#if NETSTANDARD2_0
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (PlatformID.Win32NT == Environment.OSVersion.Platform)
             {
-                url = url.Replace("&", "^&");
-                Process.Start(new ProcessStartInfo("cmd", $"/c start {url}"));
+                Process.Start(url);
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                Process.Start("xdg-open", url);
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            else if (PlatformID.Unix == Environment.OSVersion.Platform)
             {
                 Process.Start("open", url);
             }
-#else
-            url = url.Replace("&", "^&");
-            Process.Start(new ProcessStartInfo("cmd", $"/c start {url}"));
-#endif
         }
     }
 }
